@@ -14,13 +14,28 @@ import java.util.*
 
 class AddTaskActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddTaskBinding
+    private var currentTaskId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddTaskBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        intent.getIntExtra(TASK_ID, -1)?.let { it ->
+            currentTaskId = it
+            TaskDataSource.getById(it)?.let { task ->
+                setTaskFields(task)
+            }
+        }
+
         insertListeners()
+    }
+
+    private fun setTaskFields(task: Task) {
+        binding.tilTitle.text = task.title
+        binding.tilDescription.text = task.description
+        binding.tilDate.text = task.date
+        binding.tilTime.text = task.time
     }
 
     private fun insertListeners() {
@@ -38,7 +53,8 @@ class AddTaskActivity : AppCompatActivity() {
                 .build()
 
             timerPicker.addOnPositiveButtonClickListener {
-                binding.tilTime.text = String.format("%02d:%02d", timerPicker.hour, timerPicker.minute)
+                binding.tilTime.text =
+                    String.format("%02d:%02d", timerPicker.hour, timerPicker.minute)
             }
             timerPicker.show(supportFragmentManager, "NEW_TASK_TIMER_PICKER")
         }
@@ -47,20 +63,40 @@ class AddTaskActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.btnNewTask.setOnClickListener {
-            val task = Task(
-                title = binding.tilTitle.text,
-                description = binding.tilDescription.text,
-                time = binding.tilTime.text,
-                date = binding.tilDate.text,
-            )
-            TaskDataSource.insert(task)
+        binding.btnSaveTask.setOnClickListener {
+            if (currentTaskId != null) {
+                updateTask(currentTaskId!!)
+            } else {
+                createNewTask()
+            }
             setResult(NEW_TASK_RESULT_CODE)
             finish()
         }
     }
 
+    private fun updateTask(id: Int) {
+        val task = Task(
+            id = id,
+            title = binding.tilTitle.text,
+            description = binding.tilDescription.text,
+            time = binding.tilTime.text,
+            date = binding.tilDate.text,
+        )
+        TaskDataSource.update(task)
+    }
+
+    private fun createNewTask() {
+        val task = Task(
+            title = binding.tilTitle.text,
+            description = binding.tilDescription.text,
+            time = binding.tilTime.text,
+            date = binding.tilDate.text,
+        )
+        TaskDataSource.insert(task)
+    }
+
     companion object {
         const val NEW_TASK_RESULT_CODE = 7
+        const val TASK_ID = "TASK_ID"
     }
 }

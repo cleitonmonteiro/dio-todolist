@@ -22,8 +22,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.rvTasks.adapter = adapter
-        adapter.submitList(TaskDataSource.getAll())
+        updateList()
         insertListeners()
+    }
+
+    private fun updateList() {
+        adapter.submitList(TaskDataSource.getAllSortedById())
     }
 
     private fun insertListeners() {
@@ -32,12 +36,15 @@ class MainActivity : AppCompatActivity() {
             createActivityLauncher.launch(intent)
         }
 
-        adapter.listenerEdit = {
-            Log.e(TAG, "${it.title}")
+        adapter.listenerEdit = { task ->
+            val intent = Intent(this, AddTaskActivity::class.java)
+            intent.putExtra(AddTaskActivity.TASK_ID, task.id)
+            createActivityLauncher.launch(intent)
         }
 
         adapter.listenerDelete = {
-            Log.e(TAG, "${it.title}")
+            TaskDataSource.delete(it)
+            updateList()
         }
     }
 
@@ -47,8 +54,7 @@ class MainActivity : AppCompatActivity() {
 
         when (result.resultCode) {
             AddTaskActivity.NEW_TASK_RESULT_CODE -> {
-                binding.rvTasks.adapter = adapter
-                adapter.submitList(TaskDataSource.getAll())
+                updateList()
             }
         }
     }

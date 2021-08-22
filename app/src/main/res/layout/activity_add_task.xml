@@ -107,16 +107,16 @@
         android:layout_height="wrap_content"
         android:text="@android:string/cancel"
         android:textAllCaps="false"
-        app:layout_constraintBottom_toTopOf="@id/btnNewTask"
+        app:layout_constraintBottom_toTopOf="@id/btnSaveTask"
         app:layout_constraintEnd_toEndOf="@id/guideEnd"
         app:layout_constraintStart_toStartOf="@id/guideStart" />
 <!--    TODO: align with the keyboard -->
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnNewTask"
+        android:id="@+id/btnSaveTask"
         android:layout_width="0dp"
         android:layout_marginBottom="16dp"
         android:layout_height="wrap_content"
-        android:text="@string/new_task"
+        android:text="@string/save_task"
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideEnd"

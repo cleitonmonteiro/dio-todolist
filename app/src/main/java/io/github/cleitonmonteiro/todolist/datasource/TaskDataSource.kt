@@ -13,9 +13,25 @@ object TaskDataSource {
         )
     )
 
-    fun getAll() =  list
+    fun getAll() = list.toList()
+
+    fun getAllSortedById() = list.sortedBy { it.id }
 
     fun insert(task: Task) {
         list.add(task.copy(id = list.size + 1))
+    }
+
+    fun delete(task: Task) {
+        list.remove(task)
+    }
+
+    fun update(task: Task) {
+        val oldTask = getById(task.id)
+        list.remove(oldTask)
+        list.add(task)
+    }
+
+    fun getById(id: Int): Task? {
+        return list.find { it.id == id }
     }
 }
