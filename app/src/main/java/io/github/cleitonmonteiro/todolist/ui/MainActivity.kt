@@ -2,7 +2,7 @@ package io.github.cleitonmonteiro.todolist.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import io.github.cleitonmonteiro.todolist.databinding.ActivityMainBinding
@@ -27,7 +27,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateList() {
-        adapter.submitList(TaskDataSource.getAllSortedById())
+        val list = TaskDataSource.getAllSortedById()
+        binding.includeEmpty.emptyState.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
+        adapter.submitList(list)
     }
 
     private fun insertListeners() {
