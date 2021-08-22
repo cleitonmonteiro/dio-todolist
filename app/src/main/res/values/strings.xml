@@ -2,4 +2,8 @@
     <string name="app_name">To Do List</string>
     <string name="todos">Tarefas</string>
     <string name="new_todo">Adicionar nova tarefa</string>
+    <string name="new_task">Criar tarefa</string>
+    <string name="hint_task_title">Título</string>
+    <string name="hint_task_description">Descrição</string>
+    <string name="hint_task_date">Data</string>
 </resources>
