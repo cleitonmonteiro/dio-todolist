@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ToDoList">
         <activity
-            android:name=".ui.AddTask"
+            android:name=".ui.AddTaskActivity"
             android:exported="true" />
 
         <activity

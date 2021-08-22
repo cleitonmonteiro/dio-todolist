@@ -6,4 +6,6 @@
     <string name="hint_task_title">Título</string>
     <string name="hint_task_description">Descrição</string>
     <string name="hint_task_date">Data</string>
+    <string name="edit_task">Editar</string>
+    <string name="delete_task">Deletar</string>
 </resources>

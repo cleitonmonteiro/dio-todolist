@@ -1,7 +1,6 @@
 package io.github.cleitonmonteiro.todolist.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -13,8 +12,8 @@ import io.github.cleitonmonteiro.todolist.extensions.text
 import io.github.cleitonmonteiro.todolist.model.Task
 import java.util.*
 
-class AddTask : AppCompatActivity() {
-    lateinit var binding: ActivityAddTaskBinding
+class AddTaskActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityAddTaskBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +55,12 @@ class AddTask : AppCompatActivity() {
                 date = binding.tilDate.text,
             )
             TaskDataSource.insert(task)
+            setResult(NEW_TASK_RESULT_CODE)
+            finish()
         }
+    }
+
+    companion object {
+        const val NEW_TASK_RESULT_CODE = 7
     }
 }
