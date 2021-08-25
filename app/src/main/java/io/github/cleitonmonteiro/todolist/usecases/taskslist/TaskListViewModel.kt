@@ -17,4 +17,8 @@ class TaskListViewModel(
     fun deleteTask(task: Task) = viewModelScope.launch {
         taskDao.delete(task)
     }
+
+    fun updateComplete(taskId: Int, completed: Boolean) = viewModelScope.launch {
+        taskDao.updateCompleted(taskId, completed)
+    }
 }

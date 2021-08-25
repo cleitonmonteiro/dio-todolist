@@ -15,7 +15,11 @@ interface TaskDao {
     @Update
     suspend fun update(task: Task)
 
-    @Query("SELECT * FROM task_table ORDER BY id DESC")
+    @Query("UPDATE task_table SET completed = :completed WHERE id = :taskId")
+    suspend fun updateCompleted(taskId: Int, completed: Boolean)
+
+
+    @Query("SELECT * FROM task_table ORDER BY id ASC")
     fun getAll(): LiveData<List<Task>>
 
     @Query("SELECT * from task_table WHERE id = :id")

@@ -3,7 +3,6 @@ package io.github.cleitonmonteiro.todolist.usecases.taskslist
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import io.github.cleitonmonteiro.todolist.database.TaskDatabase
@@ -37,17 +36,21 @@ class TasksListActivity : AppCompatActivity() {
     private fun insertListeners() {
         binding.fabAdd.setOnClickListener {
             val intent = Intent(this, AddEditTaskActivity::class.java)
-            createActivityLauncher.launch(intent)
+            startActivity(intent)
         }
 
         adapter.listenerEdit = { task ->
             val intent = Intent(this, AddEditTaskActivity::class.java)
             intent.putExtra(AddEditTaskActivity.TASK_EXTRA, task)
-            createActivityLauncher.launch(intent)
+            startActivity(intent)
         }
 
         adapter.listenerDelete = {
             viewModel.deleteTask(it)
+        }
+
+        adapter.listenerComplete = { task, isChecked ->
+            viewModel.updateComplete(task.id, isChecked)
         }
 
         viewModel.tasks.observe(this, {
@@ -57,16 +60,5 @@ class TasksListActivity : AppCompatActivity() {
                 adapter.submitList(tasks)
             }
         })
-    }
-
-    private val createActivityLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-
-        when (result.resultCode) {
-            AddEditTaskActivity.NEW_TASK_RESULT_CODE -> {
-//                updateList()
-            }
-        }
     }
 }

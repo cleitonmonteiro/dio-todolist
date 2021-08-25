@@ -3,6 +3,7 @@ package io.github.cleitonmonteiro.todolist.usecases.taskslist
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -16,6 +17,7 @@ class TaskListAdapter:
     ListAdapter<Task, TaskListAdapter.TaskViewHolder>(TaskDiffCallback()) {
     var listenerEdit: (Task) -> Unit = {}
     var listenerDelete: (Task) -> Unit = {}
+    var listenerComplete: (Task, Boolean) -> Unit = {task, isChecked -> }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -35,6 +37,10 @@ class TaskListAdapter:
             binding.tvDateTime.text = "${item.date} ${item.time}"
             binding.ivMore.setOnClickListener {
                 showMenuPopup(it, item)
+            }
+            binding.cbComplete.isChecked = item.completed
+            binding.cbComplete.setOnClickListener {
+                listenerComplete(item, (it as CompoundButton).isChecked)
             }
         }
 
