@@ -10,11 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ToDoList">
         <activity
-            android:name=".ui.AddTaskActivity"
+            android:name=".usecases.addedittask.AddEditTaskActivity"
             android:exported="true" />
 
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".usecases.taskslist.TasksListActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

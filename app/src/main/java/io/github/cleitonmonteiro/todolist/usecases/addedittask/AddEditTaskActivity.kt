@@ -1,41 +1,37 @@
-package io.github.cleitonmonteiro.todolist.ui
+package io.github.cleitonmonteiro.todolist.usecases.addedittask
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import io.github.cleitonmonteiro.todolist.database.TaskDatabase
+import io.github.cleitonmonteiro.todolist.database.model.Task
 import io.github.cleitonmonteiro.todolist.databinding.ActivityAddTaskBinding
-import io.github.cleitonmonteiro.todolist.datasource.TaskDataSource
 import io.github.cleitonmonteiro.todolist.extensions.format
 import io.github.cleitonmonteiro.todolist.extensions.text
-import io.github.cleitonmonteiro.todolist.model.Task
 import java.util.*
 
-class AddTaskActivity : AppCompatActivity() {
+class AddEditTaskActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddTaskBinding
-    private var currentTaskId: Int? = null
+    private lateinit var viewModel: AddEditTaskViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddTaskBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        intent.getIntExtra(TASK_ID, -1)?.let { it ->
-            currentTaskId = it
-            TaskDataSource.getById(it)?.let { task ->
-                setTaskFields(task)
-            }
+        val taskDao = TaskDatabase.getInstance(this).taskDao
+        val viewModelFactory = AddEditTaskViewModelFactory(taskDao)
+        viewModel =
+            ViewModelProvider(this, viewModelFactory).get(AddEditTaskViewModel::class.java)
+
+        intent.getParcelableExtra<Task>(TASK_EXTRA)?.let { it ->
+            viewModel.updateCurrentTask(it)
         }
 
         insertListeners()
-    }
-
-    private fun setTaskFields(task: Task) {
-        binding.tilTitle.text = task.title
-        binding.tilDescription.text = task.description
-        binding.tilDate.text = task.date
-        binding.tilTime.text = task.time
     }
 
     private fun insertListeners() {
@@ -64,39 +60,33 @@ class AddTaskActivity : AppCompatActivity() {
         }
 
         binding.btnSaveTask.setOnClickListener {
-            if (currentTaskId != null) {
-                updateTask(currentTaskId!!)
-            } else {
-                createNewTask()
-            }
+            val task = Task(
+                title = binding.tilTitle.text,
+                description = binding.tilDescription.text,
+                time = binding.tilTime.text,
+                date = binding.tilDate.text,
+            )
+            viewModel.saveTask(task)
             setResult(NEW_TASK_RESULT_CODE)
             finish()
         }
+
+        viewModel.currentTask.observe(this, { currentTask ->
+            if (currentTask != null) {
+                setTaskFields(task = currentTask)
+            }
+        })
     }
 
-    private fun updateTask(id: Int) {
-        val task = Task(
-            id = id,
-            title = binding.tilTitle.text,
-            description = binding.tilDescription.text,
-            time = binding.tilTime.text,
-            date = binding.tilDate.text,
-        )
-        TaskDataSource.update(task)
-    }
-
-    private fun createNewTask() {
-        val task = Task(
-            title = binding.tilTitle.text,
-            description = binding.tilDescription.text,
-            time = binding.tilTime.text,
-            date = binding.tilDate.text,
-        )
-        TaskDataSource.insert(task)
+    private fun setTaskFields(task: Task) {
+        binding.tilTitle.text = task.title
+        binding.tilDescription.text = task.description
+        binding.tilDate.text = task.date
+        binding.tilTime.text = task.time
     }
 
     companion object {
         const val NEW_TASK_RESULT_CODE = 7
-        const val TASK_ID = "TASK_ID"
+        const val TASK_EXTRA = "TASK_EXTRA"
     }
 }

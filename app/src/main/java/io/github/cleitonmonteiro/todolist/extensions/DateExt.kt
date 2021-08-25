@@ -1,6 +1,5 @@
 package io.github.cleitonmonteiro.todolist.extensions
 
-import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -11,9 +10,3 @@ fun Date.format(): String {
             timeZone = TimeZone.getTimeZone("UTC")
         }.format(this)
 }
-
-var TextInputLayout.text: String
-    get() = editText?.text?.toString() ?: ""
-    set(value) {
-        editText?.setText(value)
-    }

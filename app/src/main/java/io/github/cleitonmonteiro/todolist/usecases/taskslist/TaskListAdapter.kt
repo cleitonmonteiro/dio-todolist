@@ -1,4 +1,4 @@
-package io.github.cleitonmonteiro.todolist.ui
+package io.github.cleitonmonteiro.todolist.usecases.taskslist
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +8,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.github.cleitonmonteiro.todolist.R
+import io.github.cleitonmonteiro.todolist.database.TaskDao
+import io.github.cleitonmonteiro.todolist.database.model.Task
 import io.github.cleitonmonteiro.todolist.databinding.TaskItemBinding
-import io.github.cleitonmonteiro.todolist.model.Task
 
-class TaskListAdapter :
+class TaskListAdapter:
     ListAdapter<Task, TaskListAdapter.TaskViewHolder>(TaskDiffCallback()) {
     var listenerEdit: (Task) -> Unit = {}
     var listenerDelete: (Task) -> Unit = {}
